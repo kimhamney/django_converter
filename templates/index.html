@@ -1,0 +1,67 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+  body {
+    background-color: beige;
+  }
+
+  .loader {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: none;
+    box-sizing: border-box;
+    animation: animloader 1s linear infinite;
+  }
+
+  @keyframes animloader {
+    0% {
+      box-shadow: -72px 0 #fff inset;
+    }
+    100% {
+      box-shadow: 48px 0 #fff inset;
+    }
+  }
+</style>
+<form class="url-form">
+  {%csrf_token%}
+  <div>
+    <input type="text" class="url-input" placeholder="Input url" />
+    <button class="convert-btn" type="submit">Convert</button>
+    <span class="loader"></span>
+  </div>
+</form>
+<script>
+  const urlForm = document.querySelector(".url-form");
+  const urlInput = document.querySelector(".url-input");
+  const convertBtn = document.querySelector(".convert-btn");
+  const spinner = document.querySelector(".loader");
+
+  urlForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const url = urlInput.value.trim();
+    if (url.length === 0) {
+      return;
+    }
+
+    spinner.style.display = "block";
+
+    fetch("", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        csrfmiddlewaretoken: document.querySelector(
+          "[name=csrfmiddlewaretoken]"
+        ).value,
+        url: url,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const response = data.response;
+        console.log(response);
+        spinner.style.display = "none";
+      });
+  });
+</script>
+{% endblock %}
