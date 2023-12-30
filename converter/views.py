@@ -23,13 +23,15 @@ def main(request):
             maxResults=5
             ).execute()
         
-        titles = []
-
-        for i in search_response['items']:
-            titles.append(i['snippet']['title'])
-            print(i['snippet']['title'])
+        result = []
+        for item in search_response['items']:
+            result.append({
+            'title': item['snippet']['title'],
+            'channel': item['snippet']['channelTitle'],
+            'thumbnail': item['snippet']['thumbnails']['default']['url']
+        })
         
-        return JsonResponse({'response': search_response['items']})
+        return JsonResponse({'response': result})
 
     return render(request, 'index.html')
 
