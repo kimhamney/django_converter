@@ -59,9 +59,57 @@
       .then((response) => response.json())
       .then((data) => {
         const response = data.response;
-        console.log(response);
+        displayList(response);
         spinner.style.display = "none";
       });
   });
+
+  function downloadVideo(url) {
+    fetch("", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        csrfmiddlewaretoken: document.querySelector(
+          "[name=csrfmiddlewaretoken]"
+        ).value,
+        url: url,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const response = data.response;
+        displayList(response);
+        spinner.style.display = "none";
+      });
+  }
+
+  function displayList(list) {
+    let fragment = document.createDocumentFragment();
+    for (let i = 0; i < list.length; i++) {
+      const container = document.createElement("div");
+      container.setAttribute("id", "video");
+
+      const downloadBtn = document.createElement("button");
+      downloadBtn.setAttribute("id", "button__download");
+      downloadBtn.addEventListener("click", function () {
+        url = "https://youtu.be" + list[i].videoId;
+        console.log(url);
+        downloadVideo(url);
+      });
+      container.append(downloadBtn);
+
+      $(container).append(`<iframe
+          width="300"
+          height="200"
+          src="https://www.youtube.com/embed/${list[i].videoId}"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>`);
+      fragment.append(container);
+    }
+    document.body.append(fragment);
+  }
 </script>
 {% endblock %}

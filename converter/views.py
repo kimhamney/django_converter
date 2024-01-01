@@ -16,7 +16,7 @@ def main(request):
         youtube=build(YOUTUBE_API_SERVICE_NAME,YOUTUBE_API_VERSION,developerKey=DEVELOPER_KEY)
 
         search_response=youtube.search().list(
-            q="잠시라도우리",
+            q="잠시라도우리 lylics",
             order='relevance',
             part='snippet',
             type="video",
@@ -25,11 +25,7 @@ def main(request):
         
         result = []
         for item in search_response['items']:
-            result.append({
-            'title': item['snippet']['title'],
-            'channel': item['snippet']['channelTitle'],
-            'thumbnail': item['snippet']['thumbnails']['default']['url']
-        })
+            result.append({'videoId': item['id']['videoId']})
         
         return JsonResponse({'response': result})
 
